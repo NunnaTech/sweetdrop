@@ -36,6 +36,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/users', 'store');
     Route::put('/users', 'update');
     Route::delete('/users/{id}', 'destroy');
+    Route::get('/users/stores/{id}', 'storesByUser');
 });
 
 Route::controller(StoreController::class)->group(function () {
@@ -89,7 +90,7 @@ Route::controller(StatusController::class)->group(function () {
 Route::controller(RoleController::class)->group(function () {
     Route::get('/roles', 'index');
     Route::get('/roles/{id}', 'show');
-    Route::get('/roles/users/{query}', 'indexByRole');
+    Route::get('/roles/users/dealers', 'indexByRoleDealer');
 });
 Route::controller(ImageController::class)->group(function () {
     Route::get('/images', 'index');

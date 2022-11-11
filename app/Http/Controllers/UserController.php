@@ -7,7 +7,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    private $response = ["success" => false, "message" => 'Your user have not been found', "data" => []];
+    private $response = ["success" => false, "message" => 'Your stores have not been found', "data" => []];
 
     public function index()
     {
@@ -16,6 +16,17 @@ class UserController extends Controller
             'message' => 'List of users',
             'data' => User::with('role')->where('is_active', true)->get()
         ];
+    }
+
+    public function storesByUser($id)
+    {
+        $stores = User::with('dealers')->where('id', '=', $id)->first()->dealers;
+        if(sizeof($stores) > 0) {
+            $this->response['success'] = true;
+            $this->response['message'] = 'List of stores by user';
+            $this->response['data'] = $stores;
+        }
+        return $this->response;
     }
 
     public function store(UserRequest $request)
