@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ObservationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -25,6 +27,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
+Route::get('/dashboard/dealer', [DashboardController::class, 'dealer']);
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');

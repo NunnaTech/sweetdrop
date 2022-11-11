@@ -11,7 +11,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        $stores = Store::where('is_active', true)->paginate(15);
+        $stores = Store::where('is_active', true);
         return [
             'success' => true,
             'message' => 'List of stores',
