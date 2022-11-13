@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'users';
     protected $fillable = ['id', 'email', 'password', 'name', 'first_surname', 'second_surname', 'phone', 'is_active', 'role_id'];
-    protected $hidden = ['is_active'];
+    protected $hidden = ['is_active', 'password', 'tokens'];
     protected $casts = ['is_active' => 'boolean'];
     public $timestamps = false;
 
