@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
         return [
             'success' => true,
-            'message' => 'Dashboard delader',
+            'message' => 'Dashboard admin',
             'data' => [
                 'stores' => $stores,
                 'orders' => $orders,

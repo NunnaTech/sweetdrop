@@ -34,15 +34,15 @@ class RoleController extends Controller
     }
 
     // TODO WHY WITH DEALER ROLE GIVES ME DIFFETENT ARRAY?
-    public function indexByRole($query)
+    public function indexByRoleDealer()
     {
         $response = ["success" => false, "message" => 'Your role have not been found', "data" => []];
-        $role = Role::query()->where('is_active', true)->where('name', 'like', '%' . $query . '%')->first();
-        if ($role)
+        $users = User::query()->where('is_active', true)->where('role_id', '=', 2)->get();
+        if ($users)
             return [
                 "success" => true,
-                "message" => 'List of users by role',
-                "data" => User::all()->where('role_id', $role->id)->where('is_active', true)
+                "message" => 'List of users by delaer role',
+                "data" => $users
             ];
         return $response;
     }
