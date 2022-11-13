@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
-
     private $response = ["success" => false, "message" => 'Your image have not been found', "data" => []];
 
     public function index()
