@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -27,6 +30,45 @@ class AuthController extends Controller
                 $this->response['data'] = $user;
                 $this->response['token'] = $token;
             }
+        }
+        return $this->response;
+    }
+
+    public function profile(UserRequest $request)
+    {
+        $user = auth()->user();
+        if ($user) {
+            $user->email = $request->email;
+            $user->name = $request->name;
+            $user->first_surname = $request->first_surname;
+            $user->second_surname = $request->second_surname;
+            $user->phone = $request->phone;
+            $user->save();
+            $this->response['success'] = true;
+            $this->response['message'] = 'Profile updated';
+            $this->response['data'] = $user;
+        }
+        return $this->response;
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+            'new_password' => 'required|confirmed'
+        ]);
+        if (!$validator->fails()) {
+            $user = auth()->user();
+            if ($user && Hash::check($request->password, $user->password)) {
+                foreach ($user->tokens as $token) $token->delete();
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+                $this->response['success'] = true;
+                $this->response['message'] = 'Password updated';
+                $this->response['data'] = $user;
+            }
+        } else {
+            return $this->response;
         }
         return $this->response;
     }
