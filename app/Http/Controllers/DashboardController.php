@@ -44,17 +44,18 @@ class DashboardController extends Controller
 
     public function dealer()
     {
+        $user = auth()->user();
         $ownStores = User::with('dealers')
-            ->where('id', '=', 3)
+            ->where('id', '=', $user->id)
             ->first()->dealers
             ->count();
         $ownOrders = Order::query()
-            ->where('delivered_by', '=', 3)
+            ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
             ->count();
         $ownLastOrders = Order::query()
-            ->where('delivered_by', '=', 3)
+            ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
             ->orderBy('deliver_date', 'desc')
