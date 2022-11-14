@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRequest;
+use App\Models\Order;
 use App\Models\Store;
 
 class StoreController extends Controller
@@ -19,6 +20,19 @@ class StoreController extends Controller
         ];
     }
 
+    public function showOrders($id){
+        $orders = Order::query()
+            ->where('store_id', '=', $id)
+            ->where('is_active', '=', true)
+            ->with('status', 'store', 'delivered')
+            ->get();
+        if(sizeof($orders) > 0) {
+            $this->response['success'] = true;
+            $this->response['message'] = 'List of orders by store';
+            $this->response['data'] = $orders;
+        }
+        return $this->response;
+    }
 
     public function store(StoreRequest $request)
     {
