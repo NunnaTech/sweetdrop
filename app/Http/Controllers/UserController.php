@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Store;
 use App\Models\User;
 
 class UserController extends Controller
@@ -20,7 +21,10 @@ class UserController extends Controller
 
     public function storesByUser($id)
     {
-        $stores = User::with('dealers')->where('id', '=', $id)->first()->dealers;
+        $stores = User::with('dealers')
+            ->where('id', '=', $id)
+            ->first()
+            ->dealers;
         if(sizeof($stores) > 0) {
             $this->response['success'] = true;
             $this->response['message'] = 'List of stores by user';

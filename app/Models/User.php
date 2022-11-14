@@ -34,6 +34,6 @@ class User extends Authenticatable
             'dealers',
             'user_id',
             'store_id',
-        );
+        )->where('is_active', true);
     }
 }
