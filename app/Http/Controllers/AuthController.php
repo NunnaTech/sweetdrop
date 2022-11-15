@@ -23,7 +23,6 @@ class AuthController extends Controller
             ->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                foreach ($user->tokens as $token) $token->delete();
                 $token = $user->createToken('authToken')->plainTextToken;
                 $this->response['success'] = true;
                 $this->response['message'] = 'User logged in';
@@ -60,7 +59,7 @@ class AuthController extends Controller
         if (!$validator->fails()) {
             $user = auth()->user();
             if ($user && Hash::check($request->password, $user->password)) {
-                foreach ($user->tokens as $token) $token->delete();
+                $user->tokens()->delete();
                 $user->password = Hash::make($request->new_password);
                 $user->save();
                 $this->response['success'] = true;
