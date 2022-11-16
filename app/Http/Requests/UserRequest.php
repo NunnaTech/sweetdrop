@@ -17,7 +17,7 @@ class UserRequest extends FormRequest
             'password' => ['max:50'],
             'name' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
             'first_surname' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
-            'second_surname' => ['max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
+            'second_surname' => ['max:50'],
             'phone' => ['required', 'unique:users,phone,' . $this->id, 'max:20', "regex:(^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$)"],
             'role_id' => ['required', "numeric"],
         ];

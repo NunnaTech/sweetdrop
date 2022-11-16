@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Order;
 use App\Models\Store;
 use App\Models\User;
 
@@ -19,13 +20,29 @@ class UserController extends Controller
         ];
     }
 
-    public function storesByUser($id)
+    public function ordersStoresByUser($idStore)
     {
+        $user = auth()->user();
+        $orders = Order::query()
+            ->where('store_id', '=', $idStore)
+            ->where('delivered_by', '=', $user->id)
+            ->where('is_active', '=', true)
+            ->with('status')
+            ->get();
+        $this->response['success'] = true;
+        $this->response['message'] = 'Stores Orders by User';
+        $this->response['data'] = $orders;
+        return $this->response;
+    }
+
+    public function storesByUser()
+    {
+        $user = auth()->user();
         $stores = User::with('dealers')
-            ->where('id', '=', $id)
+            ->where('id', '=', $user->id)
             ->first()
             ->dealers;
-        if(sizeof($stores) > 0) {
+        if (sizeof($stores) > 0) {
             $this->response['success'] = true;
             $this->response['message'] = 'List of stores by user';
             $this->response['data'] = $stores;

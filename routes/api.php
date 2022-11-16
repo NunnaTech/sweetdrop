@@ -43,6 +43,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::put('/users', 'update');
         Route::delete('/users/{id}', 'destroy');
         Route::get('/users/stores/{id}', 'storesByUser');
+        Route::get('/users/stores/orders/{idStore}', 'ordersStoresByUser');
     });
 
     Route::controller(StoreController::class)->group(function () {
@@ -63,6 +64,7 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     });
 
     Route::controller(OrderController::class)->group(function () {
+        Route::post('/orders/visit', 'storeVisit');
         Route::get('/orders', 'index');
         Route::get('/orders/user/{id}', 'indexByUser');
         Route::get('/orders/{id}', 'show');

@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Models\Image;
+use App\Models\Observation;
 use App\Models\Order;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -19,11 +24,73 @@ class OrderController extends Controller
         ];
     }
 
-    public function indexByUser($id)
+    public function storeVisit(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'store_id' => 'required|numeric',
+            'comment' => 'string',
+            'images' => 'array',
+
+        ]);
+        if (!$validator->fails()) {
+            try {
+                DB::beginTransaction();
+                $user = auth()->user();
+                $order = new Order([
+                    'folio' => $this->generateVisitFolio(),
+                    'request_date' => now(),
+                    'is_completed' => true,
+                    'deliver_date' => now(),
+                    'delivered_by' => $user->id,
+                    'store_id' => $request->store_id,
+                    'status_id' => 1,
+                ]);
+                $order->save();
+                $order->id;
+                $observation = new Observation([
+                    'comment' => $request->comment,
+                    'order_id' => $order->id,
+                ]);
+                $observation->save();
+                $observation->id;
+                $images = $request->images;
+                foreach ($images as $img) {
+                    $image = new Image([
+                        'image' => $img,
+                        'observation_id' => $observation->id,
+                    ]);
+                    $image->save();
+                }
+                DB::commit();
+                $this->response['success'] = true;
+                $this->response['message'] = 'Visit registered';
+                $this->response['data'] = [
+                    'order' => $order,
+                    'observation' => $observation,
+                ];
+                return $this->response;
+            } catch (\Exception $e) {
+                $this->response['message'] = 'The visit could not be created';
+                DB::rollBack();
+                return $this->response;
+            }
+        } else {
+            DB::rollBack();
+            $this->response['message'] = 'The fields are not valid';
+            return $this->response;
+        }
     }
 
+    private function generateVisitFolio()
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 8; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return 'VST-' . $randomString . '-' . date('Y');
+    }
 
     public function store(OrderRequest $request)
     {
@@ -35,7 +102,7 @@ class OrderController extends Controller
             'received_by' => $request->received_by,
             'delivered_by' => $request->delivered_by,
             'store_id' => $request->store_id,
-            'status_id'=>1
+            'status_id' => 1
         ]);
         $order->save();
         return [
@@ -47,7 +114,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with("delivered","store","status")
+        $order = Order::with("delivered", "store", "status")
             ->where('id', $id)->where('is_active', true)->first();
         if ($order) return ["success" => true, "message" => 'Your order have been found', "data" => $order];
         return $this->response;
