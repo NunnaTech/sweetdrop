@@ -11,7 +11,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::where('is_active', true)->paginate(15);
+        $products = Product::query()->where('is_active', true)->get();
         return [
             'success' => true,
             'message' => 'List of products',
