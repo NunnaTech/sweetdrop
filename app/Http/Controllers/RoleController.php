@@ -33,7 +33,6 @@ class RoleController extends Controller
         return $response;
     }
 
-    // TODO WHY WITH DEALER ROLE GIVES ME DIFFETENT ARRAY?
     public function indexByRoleDealer()
     {
         $response = ["success" => false, "message" => 'Your role have not been found', "data" => []];
