@@ -6,6 +6,8 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Image;
 use App\Models\Observation;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +30,7 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'store_id' => 'required|numeric',
-            'comment' => 'string',
+            'comment' => 'required|string',
             'images' => 'array',
 
         ]);
@@ -37,7 +39,7 @@ class OrderController extends Controller
                 DB::beginTransaction();
                 $user = auth()->user();
                 $order = new Order([
-                    'folio' => $this->generateVisitFolio(),
+                    'folio' => $this->generateFolio("VST"),
                     'request_date' => now(),
                     'is_completed' => true,
                     'deliver_date' => now(),
@@ -46,13 +48,11 @@ class OrderController extends Controller
                     'status_id' => 1,
                 ]);
                 $order->save();
-                $order->id;
                 $observation = new Observation([
                     'comment' => $request->comment,
                     'order_id' => $order->id,
                 ]);
                 $observation->save();
-                $observation->id;
                 $images = $request->images;
                 foreach ($images as $img) {
                     $image = new Image([
@@ -81,7 +81,7 @@ class OrderController extends Controller
         }
     }
 
-    private function generateVisitFolio()
+    private function generateFolio($type)
     {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -89,26 +89,62 @@ class OrderController extends Controller
         for ($i = 0; $i < 8; $i++) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
-        return 'VST-' . $randomString . '-' . date('Y');
+        return $type . '-' . $randomString . '-' . date('Y');
     }
 
     public function store(OrderRequest $request)
     {
-        $order = new Order([
-            'folio' => $request->folio,
-            'request_date' => $request->request_date,
-            'deliver_date' => $request->deliver_date,
-            'total' => $request->total,
-            'received_by' => $request->received_by,
-            'delivered_by' => $request->delivered_by,
-            'store_id' => $request->store_id,
-            'status_id' => 1
-        ]);
-        $order->save();
-        return [
-            'success' => true,
-            'message' => 'Your order have been stored',
-            'data' => $order];
+        try {
+            $user = auth()->user();
+            DB::beginTransaction();
+            $order = new Order([
+                'folio' => $this->generateFolio("ORD"),
+                'request_date' => now(),
+                'received_by' => $request->received_by,
+                'delivered_by' => $user->id,
+                'store_id' => $request->store_id,
+                'status_id' => 2,
+            ]);
+            $order->save();
+            $products = $request->products;
+            foreach ($products as $product) {
+                $productFound = Product::query()->where('id', "=", $product['id'])->first();
+                $sale = new Sale([
+                    'quantity' => $product['quantity'],
+                    'total' => $productFound->price * $product['quantity'],
+                    'product_id' => $product['id'],
+                    'order_id' => $order->id,
+                ]);
+                $sale->save();
+            }
+            $observation = new Observation([
+                'comment' => $request->comment,
+                'order_id' => $order->id,
+            ]);
+            $observation->save();
+            $images = $request->images;
+            foreach ($images as $img) {
+                $image = new Image([
+                    'image' => $img,
+                    'observation_id' => $observation->id,
+                ]);
+                $image->save();
+            }
+
+            $orderTotalSales = Sale::query()->where('order_id', '=', $order->id)->sum('total');
+            $order->total = floatval($orderTotalSales);
+            $order->save();
+            DB::commit();
+            $this->response['success'] = true;
+            $this->response['message'] = 'Order registered';
+            $this->response['data'] = $order;
+            return $this->response;
+        } catch (\Exception $e) {
+            $this->response['message'] = $e->getMessage();
+            DB::rollBack();
+            return $this->response;
+        }
+
     }
 
 
