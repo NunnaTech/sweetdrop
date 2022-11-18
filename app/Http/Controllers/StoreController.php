@@ -12,7 +12,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        $stores = Store::where('is_active', true);
+        $stores = Store::query()->where('is_active', true)->get();
         return [
             'success' => true,
             'message' => 'List of stores',
