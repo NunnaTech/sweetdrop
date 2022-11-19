@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Order;
 use App\Models\Store;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -50,11 +51,72 @@ class UserController extends Controller
         return $this->response;
     }
 
+    public function updateDealer(UserRequest $request)
+    {
+        try {
+            $userFound = User::query()->where('id', $request->id)->where('is_active', true)->first();
+            if ($userFound) {
+                $userFound->update([
+                    'name' => $request->name,
+                    'first_surname' => $request->first_surname,
+                    'second_surname' => $request->second_surname,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                ]);
+                $this->response['success'] = true;
+                $this->response['message'] = 'Your user have been updated';
+                $this->response['data'] = $userFound;
+                return $this->response;
+            }
+            return $this->response;
+        } catch (\Exception $e) {
+            $this->response['message'] = 'Your dealer have not been updated';
+            return $this->response;
+        }
+    }
+
+    public function storeDealer(UserRequest $request)
+    {
+        try {
+            $passwordText = $this->generatePass();
+            $user = new User([
+                'email' => $request->email,
+                'password' => Hash::make($passwordText),
+                'name' => $request->name,
+                'first_surname' => $request->first_surname,
+                'second_surname' => $request->second_surname,
+                'phone' => $request->phone,
+                'role_id' => 2,
+            ]);
+            $user->save();
+            $user->rawPassword = $passwordText;
+            $this->response['success'] = true;
+            $this->response['message'] = 'Your delaer have been stored';
+            $this->response['data'] = $user;
+            return $this->response;
+        } catch (\Exception $e) {
+            $this->response['message'] = 'Your dealer have not been stored';
+            return $this->response;
+        }
+    }
+
+
+    private function generatePass()
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 8; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     public function store(UserRequest $request)
     {
         $user = new User([
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
             'name' => $request->name,
             'first_surname' => $request->first_surname,
             'second_surname' => $request->second_surname,
