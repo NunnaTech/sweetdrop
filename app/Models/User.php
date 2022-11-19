@@ -11,6 +11,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * @var mixed|string
+     */
     protected $table = 'users';
     protected $fillable = ['id', 'email', 'password', 'name', 'first_surname', 'second_surname', 'phone', 'is_active', 'role_id'];
     protected $hidden = ['is_active', 'password', 'tokens'];

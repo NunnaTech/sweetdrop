@@ -40,7 +40,9 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
         Route::get('/users', 'index');
         Route::get('/users/{id}', 'show');
         Route::post('/users', 'store');
+        Route::post('/users/dealers', 'storeDealer');
         Route::put('/users', 'update');
+        Route::put('/users/dealers', 'updateDealer');
         Route::delete('/users/{id}', 'destroy');
         Route::get('/users/stores/{id}', 'storesByUser');
         Route::get('/users/stores/orders/{idStore}', 'ordersStoresByUser');
