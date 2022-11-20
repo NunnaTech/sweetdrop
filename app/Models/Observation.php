@@ -19,4 +19,8 @@ class Observation extends Model
     {
         return $this->belongsTo(Order::class, 'order_id');
     }
+
+    public function images(){
+        return $this->hasMany(Image::class, 'observation_id');
+    }
 }

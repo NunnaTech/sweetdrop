@@ -26,6 +26,28 @@ class OrderController extends Controller
         ];
     }
 
+
+    public function finishOrder($id){
+        try {
+            $order = Order::query()->where('id', $id)->where('is_active', true)->first();
+            if ($order) {
+                $order->update([
+                    'status_id' => 3
+                ]);
+                $this->response['success'] = true;
+                $this->response['message'] = 'Order finished';
+                $this->response['data'] = $order;
+            }else{
+                $this->response['message'] = 'Order not found';
+            }
+            return $this->response;
+        }catch (\Exception $e){
+            $this->response['success'] = false;
+            $this->response['message'] = 'Error al finalizar la orden';
+            return $this->response;
+        }
+    }
+
     public function storeVisit(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -150,9 +172,15 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with("delivered", "store", "status")
-            ->where('id', $id)->where('is_active', true)->first();
-        if ($order) return ["success" => true, "message" => 'Your order have been found', "data" => $order];
+        $order = Order::with("delivered", "store", "status", "sales", "observations")
+            ->where('id', $id)
+            ->where('is_active', true)
+            ->first();
+        if ($order){
+            $this->response['success'] = true;
+            $this->response['message'] = 'Order found';
+            $this->response['data'] = $order;
+        };
         return $this->response;
     }
 

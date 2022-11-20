@@ -31,5 +31,13 @@ class Order extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
+    public function sales(){
+        return $this->hasMany(Sale::class, 'order_id')->with('product');
+    }
+
+    public function observations(){
+        return $this->hasMany(Observation::class, 'order_id')->with('images');
+    }
+
 
 }
