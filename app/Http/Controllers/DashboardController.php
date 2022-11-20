@@ -58,6 +58,7 @@ class DashboardController extends Controller
             ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->orderBy('deliver_date', 'desc')
             ->take(10)
             ->with('status', 'store')
