@@ -24,6 +24,7 @@ class StoreController extends Controller
         $orders = Order::query()
             ->where('store_id', '=', $id)
             ->where('is_active', '=', true)
+            ->orderBy('created_at', 'desc')
             ->with('status', 'store', 'delivered')
             ->get();
         if(sizeof($orders) > 0) {
