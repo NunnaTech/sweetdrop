@@ -27,21 +27,23 @@ class OrderController extends Controller
     }
 
 
-    public function finishOrder($id){
+    public function finishOrder($id)
+    {
         try {
             $order = Order::query()->where('id', $id)->where('is_active', true)->first();
             if ($order) {
                 $order->update([
-                    'status_id' => 3
+                    'status_id' => 3,
+                    'deliver_date' => now()
                 ]);
                 $this->response['success'] = true;
                 $this->response['message'] = 'Order finished';
                 $this->response['data'] = $order;
-            }else{
+            } else {
                 $this->response['message'] = 'Order not found';
             }
             return $this->response;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->response['success'] = false;
             $this->response['message'] = 'Error al finalizar la orden';
             return $this->response;
@@ -176,7 +178,7 @@ class OrderController extends Controller
             ->where('id', $id)
             ->where('is_active', true)
             ->first();
-        if ($order){
+        if ($order) {
             $this->response['success'] = true;
             $this->response['message'] = 'Order found';
             $this->response['data'] = $order;
