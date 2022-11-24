@@ -34,7 +34,8 @@ class OrderController extends Controller
             if ($order) {
                 $order->update([
                     'status_id' => 3,
-                    'deliver_date' => now()
+                    'deliver_date' => now(),
+                    'is_completed' => true,
                 ]);
                 $this->response['success'] = true;
                 $this->response['message'] = 'Order finished';
