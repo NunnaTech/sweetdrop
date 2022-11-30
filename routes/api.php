@@ -49,6 +49,8 @@ Route::group(['middleware' => ["auth:sanctum"]], function () {
     });
 
     Route::controller(StoreController::class)->group(function () {
+        Route::get('/stores/dealers', 'showDealers');
+        Route::post('/stores/dealers', 'setDealersToStore');
         Route::get('/stores', 'index');
         Route::get('/stores/{id}', 'show');
         Route::get('/stores/orders/{id}', 'showOrders');

@@ -30,6 +30,15 @@ class User extends Authenticatable
         return $this->belongsTo(Order::class, 'delivered_by');
     }
 
+    public function totalVisits()
+    {
+        return $this->hasMany(Order::class, 'delivered_by')->where('is_active', true)->where('status_id', 1);
+    }
+    public function totalOrders()
+    {
+        return $this->hasMany(Order::class, 'delivered_by')->where('is_active', true)->where('status_id', 3);
+    }
+
     public function dealers()
     {
         return $this->belongsToMany(

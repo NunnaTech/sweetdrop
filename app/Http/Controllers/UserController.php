@@ -17,7 +17,7 @@ class UserController extends Controller
         return [
             'success' => true,
             'message' => 'List of users',
-            'data' => User::with('role')->where('is_active', true)->get()
+            'data' => User::with('role', 'visits')->where('is_active', true)->get()
         ];
     }
 
