@@ -11,7 +11,7 @@ class Order extends Model
 
     protected $table = 'orders';
     protected $fillable = ['id', 'folio', 'request_date', 'is_completed', 'deliver_date',
-        'total', 'received_by', 'is_active', 'delivered_by', 'store_id','status_id'];
+        'total', 'received_by', 'is_active', 'delivered_by', 'store_id', 'status_id'];
     protected $hidden = ['is_active'];
     protected $casts = ['is_active' => 'boolean', 'is_completed' => 'boolean'];
     public $timestamps = false;
@@ -21,6 +21,7 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'delivered_by');
     }
+
     public function status()
     {
         return $this->belongsTo(Status::class, 'status_id');
@@ -31,13 +32,19 @@ class Order extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function sales(){
+    public function sales()
+    {
         return $this->hasMany(Sale::class, 'order_id')->with('product');
     }
 
-    public function observations(){
+    public function observations()
+    {
         return $this->hasMany(Observation::class, 'order_id')->with('images');
     }
 
+    public function visits()
+    {
+        return $this->newQuery()->where('is_active', "=", true)->where('status_id', "=", 1);
+    }
 
 }
