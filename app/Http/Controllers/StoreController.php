@@ -111,7 +111,9 @@ class StoreController extends Controller
 
     public function show($id)
     {
-        $store = Store::query()->where('id', $id)->where('is_active', true)->first();
+        $store = Store::query()->where('id', $id)->where('is_active', true)->with(['dealers'=>function($q){
+            $q->select('id');
+        }])->first();
         if ($store) return ["success" => true, "message" => 'Your store have been found', "data" => $store];
         return $this->response;
     }
