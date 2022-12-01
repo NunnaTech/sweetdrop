@@ -13,8 +13,8 @@ class ProductRequest extends FormRequest
     {
         return [
             'sku' => ['required', 'max:30'],
-            'name' => ['required', 'unique:products,name,' . $this->id, 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,99}[a-zA-ZÑñ]$)"],
-            'description' => ['max:255',"regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,99}[a-zA-ZÑñ]$)"],
+            'name' => ['required', 'unique:products,name,' . $this->id, 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
+            'description' => ['max:255',"regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
             'price' => ['required', 'digits:10'],
             'image' => [ 'max:150'],
         ];
