@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $orders = Order::query()
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->count();
         $dealers = User::where('role_id', 2)->where('is_active', true)->count();
         $products = Product::query()->where('is_active', true)->count();
@@ -53,6 +54,7 @@ class DashboardController extends Controller
             ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->count();
         $ownLastOrders = Order::query()
             ->where('delivered_by', '=', $user->id)
