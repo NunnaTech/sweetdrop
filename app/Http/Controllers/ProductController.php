@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = new Product([
-            'sku' => $request->sku,
+            'sku' => $this->generateSku(),
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
@@ -35,6 +35,17 @@ class ProductController extends Controller
             'message' => 'Your product have been stored',
             'data' => $product
         ];
+    }
+
+    private function generateSku()
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 6; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString . '-' . date('Y');
     }
 
 
