@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->string("name", 50);
             $table->string("description")->nullable();
             $table->float("price")->default(0.0);
-            $table->string("image", 150)->default('https://i.imgur.com/SiMTXOF.png');
+            $table->string("image", 300)->default('https://i.imgur.com/SiMTXOF.png');
             $table->boolean("is_active")->default(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
