@@ -14,9 +14,9 @@ class ProductRequest extends FormRequest
         return [
             'sku' => ['required', 'max:30'],
             'name' => ['required', 'unique:products,name,' . $this->id, 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
-            'description' => ['max:255',"regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
-            'price' => ['required', 'digits:10'],
-            'image' => [ 'max:150'],
+            'description' => ['max:255'],
+            'price' => ['required'],
+            'image' => [ 'max:300'],
         ];
     }
     public function failedValidation(Validator $validator)
@@ -31,8 +31,7 @@ class ProductRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'The :attribute must be a correct :attribute',
-            'owner.regex' => 'The :attribute must be a correct :attribute',
+            'name.regex' => 'The :attribute must be a correct :attribute',
         ];
     }
 }
