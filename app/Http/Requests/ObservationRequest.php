@@ -26,8 +26,7 @@ class ObservationRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'The :attribute must be a correct :attribute',
-            'owner.regex' => 'The :attribute must be a correct :attribute',
+
         ];
     }
 }

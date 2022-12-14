@@ -16,7 +16,7 @@ class OrderRequest extends FormRequest
             'products' => ['required', 'array'],
             'products.*.id' => ['required', 'numeric'],
             'products.*.quantity' => ['required', 'numeric'],
-            'comment' => ['required','string'],
+            'comment' => ['string'],
             'images' => ['array'],
         ];
     }
