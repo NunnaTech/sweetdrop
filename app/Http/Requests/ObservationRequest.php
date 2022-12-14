@@ -11,7 +11,7 @@ class ObservationRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => ['required', 'max:100', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
+            'comment' => ['max:100', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
         ];
     }
     public function failedValidation(Validator $validator)
