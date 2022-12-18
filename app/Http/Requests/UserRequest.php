@@ -13,13 +13,14 @@ class UserRequest extends FormRequest
         // Uniques will be: unique:users,email,id
         // unique:<table>,<column_table>,<id> WHEN WE JUST UPDATE
         return [
+            'id' => ["numeric"],
             'email' => ['required', 'email', 'unique:users,email,' . $this->id, 'max:50'],
-            'password' => ['required', 'max:50'],
-            'name' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
-            'first_surname' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
-            'second_surname' => ['max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,49}[a-zA-ZÑñ]$)"],
+            'password' => ['max:50'],
+            'name' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,49}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
+            'first_surname' => ['required', 'max:50', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,49}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
+            'second_surname' => ['max:50'],
             'phone' => ['required', 'unique:users,phone,' . $this->id, 'max:20', "regex:(^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$)"],
-            'role_id' => ['required', "numeric"],
+            'role_id' => ["numeric"],
         ];
     }
 

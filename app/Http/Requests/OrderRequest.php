@@ -8,17 +8,16 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OrderRequest extends FormRequest
 {
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            'folio' => ['required', 'max:80', 'unique:orders,folio'],
-            'total' => ['required', 'max:999999'],
+            'received_by' => ['required', 'max:100'],
+            'store_id' => ['required', 'numeric'],
+            'products' => ['required', 'array'],
+            'products.*.id' => ['required', 'numeric'],
+            'products.*.quantity' => ['required', 'numeric'],
+            'comment' => ['string'],
+            'images' => ['array'],
         ];
     }
     public function failedValidation(Validator $validator)
@@ -33,8 +32,6 @@ class OrderRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'The :attribute must be a correct :attribute',
-            'owner.regex' => 'The :attribute must be a correct :attribute',
         ];
     }
 }

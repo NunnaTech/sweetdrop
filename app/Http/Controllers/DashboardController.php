@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $orders = Order::query()
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->count();
         $dealers = User::where('role_id', 2)->where('is_active', true)->count();
         $products = Product::query()->where('is_active', true)->count();
@@ -23,6 +24,7 @@ class DashboardController extends Controller
         $lastOrders = Order::query()
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->orderBy('deliver_date', 'desc')
             ->take(10)
             ->with('status', 'store')
@@ -30,7 +32,7 @@ class DashboardController extends Controller
 
         return [
             'success' => true,
-            'message' => 'Dashboard delader',
+            'message' => 'Dashboard admin',
             'data' => [
                 'stores' => $stores,
                 'orders' => $orders,
@@ -44,19 +46,22 @@ class DashboardController extends Controller
 
     public function dealer()
     {
+        $user = auth()->user();
         $ownStores = User::with('dealers')
-            ->where('id', '=', 3)
+            ->where('id', '=', $user->id)
             ->first()->dealers
             ->count();
         $ownOrders = Order::query()
-            ->where('delivered_by', '=', 3)
+            ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->count();
         $ownLastOrders = Order::query()
-            ->where('delivered_by', '=', 3)
+            ->where('delivered_by', '=', $user->id)
             ->where('is_completed', '=', true)
             ->where('is_active', '=', true)
+            ->where('status_id', '=', 3)
             ->orderBy('deliver_date', 'desc')
             ->take(10)
             ->with('status', 'store')

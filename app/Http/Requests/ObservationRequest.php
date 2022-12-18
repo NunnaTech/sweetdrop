@@ -8,16 +8,10 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class ObservationRequest extends FormRequest
 {
 
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            'comment' => ['required', 'max:100', "regex:(^[a-zA-Z][a-zA-Z\sñÑ]{0,99}[a-zA-ZÑñ]$)"],
+            'comment' => ['max:100', "regex:(^[a-zA-Z][a-zA-Z\sñÑáéíóúÁÉÍÓÚ]{0,99}[a-zA-ZÑñáéíóúÁÉÍÓÚ]$)"],
         ];
     }
     public function failedValidation(Validator $validator)
@@ -32,8 +26,7 @@ class ObservationRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone.regex' => 'The :attribute must be a correct :attribute',
-            'owner.regex' => 'The :attribute must be a correct :attribute',
+
         ];
     }
 }
